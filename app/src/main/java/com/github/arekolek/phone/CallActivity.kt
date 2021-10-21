@@ -1,11 +1,9 @@
 package com.github.arekolek.phone
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.telecom.Call
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.github.arekolek.phone.databinding.ActivityCallBinding
@@ -18,7 +16,7 @@ class CallActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCallBinding
     private val disposables = CompositeDisposable()
 
-    private lateinit var number: String
+    private var number: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +24,7 @@ class CallActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        number = intent.data.schemeSpecificPart
+        number = intent?.data?.schemeSpecificPart
     }
 
     override fun onStart() {
@@ -52,25 +50,20 @@ class CallActivity : AppCompatActivity() {
             .addTo(disposables)
     }
 
-    @SuppressLint("SetTextI18n")
     private fun updateUi(state: Int) {
-        val asString = when (state) {
-            Call.STATE_NEW -> "NEW"
-            Call.STATE_RINGING -> "RINGING"
-            Call.STATE_DIALING -> "DIALING"
-            Call.STATE_ACTIVE -> "ACTIVE"
-            Call.STATE_HOLDING -> "HOLDING"
-            Call.STATE_DISCONNECTED -> "DISCONNECTED"
-            Call.STATE_CONNECTING -> "CONNECTING"
-            Call.STATE_DISCONNECTING -> "DISCONNECTING"
-            Call.STATE_SELECT_PHONE_ACCOUNT -> "SELECT_PHONE_ACCOUNT"
-            else -> {
-                Log.d(javaClass.simpleName, "Unknown state $state")
-                "UNKNOWN"
-            }
-        }
-        binding.callInfo.text = "${asString.toLowerCase().capitalize()}\n$number"
-
+        binding.callInfo.text = getString(when (state) {
+            Call.STATE_NEW -> R.string.call_state_new
+            Call.STATE_RINGING -> R.string.call_state_ringing
+            Call.STATE_DIALING -> R.string.call_state_dialing
+            Call.STATE_ACTIVE -> R.string.call_state_active
+            Call.STATE_HOLDING -> R.string.call_state_holding
+            Call.STATE_DISCONNECTED -> R.string.call_state_disconnected
+            Call.STATE_CONNECTING -> R.string.call_state_connecting
+            Call.STATE_DISCONNECTING -> R.string.call_state_disconnecting
+            Call.STATE_SELECT_PHONE_ACCOUNT -> R.string.call_state_select_phone_account
+            else -> R.string.call_state_unknown
+        })
+        binding.number.text = number
         binding.answer.isVisible = state == Call.STATE_RINGING
         binding.hangup.isVisible = state in listOf(
             Call.STATE_DIALING,
