@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_call.*
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class CallActivity : AppCompatActivity() {
@@ -49,7 +50,22 @@ class CallActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun updateUi(state: Int) {
-        callInfo.text = "${state.asString().toLowerCase().capitalize()}\n$number"
+        val asString = when (state) {
+            Call.STATE_NEW -> "NEW"
+            Call.STATE_RINGING -> "RINGING"
+            Call.STATE_DIALING -> "DIALING"
+            Call.STATE_ACTIVE -> "ACTIVE"
+            Call.STATE_HOLDING -> "HOLDING"
+            Call.STATE_DISCONNECTED -> "DISCONNECTED"
+            Call.STATE_CONNECTING -> "CONNECTING"
+            Call.STATE_DISCONNECTING -> "DISCONNECTING"
+            Call.STATE_SELECT_PHONE_ACCOUNT -> "SELECT_PHONE_ACCOUNT"
+            else -> {
+                Timber.w("Unknown state ${state}")
+                "UNKNOWN"
+            }
+        }
+        callInfo.text = "${asString.toLowerCase().capitalize()}\n$number"
 
         answer.isVisible = state == Call.STATE_RINGING
         hangup.isVisible = state in listOf(
