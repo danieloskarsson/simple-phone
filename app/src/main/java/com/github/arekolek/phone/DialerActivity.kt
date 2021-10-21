@@ -11,22 +11,27 @@ import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.core.content.PermissionChecker.checkSelfPermission
 import androidx.core.net.toUri
-import kotlinx.android.synthetic.main.activity_dialer.*
+import com.github.arekolek.phone.databinding.ActivityDialerBinding
 
 
 class DialerActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityDialerBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_dialer)
-        phoneNumberInput.setText(intent?.data?.schemeSpecificPart)
+        binding = ActivityDialerBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+
+        binding.phoneNumberInput.setText(intent?.data?.schemeSpecificPart)
     }
 
     override fun onStart() {
         super.onStart()
         offerReplacingDefaultDialer()
 
-        phoneNumberInput.setOnEditorActionListener { _, _, _ ->
+        binding.phoneNumberInput.setOnEditorActionListener { _, _, _ ->
             makeCall()
             true
         }
@@ -34,7 +39,7 @@ class DialerActivity : AppCompatActivity() {
 
     private fun makeCall() {
         if (checkSelfPermission(this, CALL_PHONE) == PERMISSION_GRANTED) {
-            val uri = "tel:${phoneNumberInput.text}".toUri()
+            val uri = "tel:${binding.phoneNumberInput.text}".toUri()
             startActivity(Intent(Intent.ACTION_CALL, uri))
         } else {
             requestPermissions(this, arrayOf(CALL_PHONE), REQUEST_PERMISSION)

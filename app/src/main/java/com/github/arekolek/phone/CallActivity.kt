@@ -8,31 +8,35 @@ import android.telecom.Call
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import com.github.arekolek.phone.databinding.ActivityCallBinding
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import kotlinx.android.synthetic.main.activity_call.*
 import java.util.concurrent.TimeUnit
 
 class CallActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityCallBinding
     private val disposables = CompositeDisposable()
 
     private lateinit var number: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_call)
+        binding = ActivityCallBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+
         number = intent.data.schemeSpecificPart
     }
 
     override fun onStart() {
         super.onStart()
 
-        answer.setOnClickListener {
+        binding.answer.setOnClickListener {
             OngoingCall.answer()
         }
 
-        hangup.setOnClickListener {
+        binding.hangup.setOnClickListener {
             OngoingCall.hangup()
         }
 
@@ -65,10 +69,10 @@ class CallActivity : AppCompatActivity() {
                 "UNKNOWN"
             }
         }
-        callInfo.text = "${asString.toLowerCase().capitalize()}\n$number"
+        binding.callInfo.text = "${asString.toLowerCase().capitalize()}\n$number"
 
-        answer.isVisible = state == Call.STATE_RINGING
-        hangup.isVisible = state in listOf(
+        binding.answer.isVisible = state == Call.STATE_RINGING
+        binding.hangup.isVisible = state in listOf(
             Call.STATE_DIALING,
             Call.STATE_RINGING,
             Call.STATE_ACTIVE
