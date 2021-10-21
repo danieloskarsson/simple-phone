@@ -5,12 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.telecom.Call
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_call.*
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class CallActivity : AppCompatActivity() {
@@ -61,7 +61,7 @@ class CallActivity : AppCompatActivity() {
             Call.STATE_DISCONNECTING -> "DISCONNECTING"
             Call.STATE_SELECT_PHONE_ACCOUNT -> "SELECT_PHONE_ACCOUNT"
             else -> {
-                Timber.w("Unknown state ${state}")
+                Log.d(javaClass.simpleName, "Unknown state $state")
                 "UNKNOWN"
             }
         }
