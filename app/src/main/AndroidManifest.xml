@@ -19,6 +19,7 @@
         <activity
             android:name=".DialerActivity"
             android:windowSoftInputMode="stateAlwaysVisible|adjustResize"
+            android:exported="true"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -44,6 +45,7 @@
         <service
             android:name=".CallService"
             android:permission="android.permission.BIND_INCALL_SERVICE"
+            android:exported="false"
             >
             <meta-data
                 android:name="android.telecom.IN_CALL_SERVICE_UI"
